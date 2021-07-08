@@ -1,0 +1,35 @@
+body {
+  margin: 0;
+}
+
+body,
+#root {
+  min-height: 100vh;
+}
+
+.header {
+  background-color: rgba(191, 191, 191, 0.15);
+  padding: 5px;
+}
+
+.header__brand {
+  text-decoration: none;
+  color: #999;
+}
+.header__brand > span {
+  font-size: 24px;
+  font-weight: bold;
+}
+.header__brand > img {
+  margin-right: 5px;
+  vertical-align: text-bottom;
+}
+
+.header__items {
+  list-style: none;
+  display: flex;
+  justify-content: flex-end;
+}
+.header__items > li {
+  padding: 5px;
+}
