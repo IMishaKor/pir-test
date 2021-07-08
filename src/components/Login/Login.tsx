@@ -1,14 +1,16 @@
 import Box, { Item } from 'devextreme-react/box';
 import Form, { ButtonItem, GroupItem, SimpleItem, Label, EmailRule, RequiredRule } from 'devextreme-react/form';
+import { useState } from 'react';
 
-const customer = {
-  Email: '',
+const authFormData = {
+  Email: 'mr.kmv@bk.ru',
   Password: '',
 };
+
 const Login = () => {
   const handleSubmit = (e: React.SyntheticEvent): void => {
     e.preventDefault();
-    console.log(123);
+    console.log(authFormData);
   };
   return (
     <>
@@ -16,11 +18,10 @@ const Login = () => {
         <Item ratio={0} baseSize={400}>
           <form action="your-action" onSubmit={handleSubmit}>
             <Form
-              formData={customer}
+              formData={authFormData}
               labelLocation="top"
               readOnly={false}
               showColonAfterLabel={true}
-              showValidationSummary={true}
               validationGroup="customerData"
             >
               <GroupItem caption="Авторизация">
@@ -36,7 +37,10 @@ const Login = () => {
                 </SimpleItem>
               </GroupItem>
 
-              <ButtonItem horizontalAlignment="left" buttonOptions={{ text: 'Войти', type: 'success' }} />
+              <ButtonItem
+                horizontalAlignment="left"
+                buttonOptions={{ text: 'Войти', type: 'success', useSubmitBehavior: true }}
+              />
             </Form>
           </form>
         </Item>
