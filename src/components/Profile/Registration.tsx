@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useHistory, Redirect } from 'react-router-dom';
+import { observer } from 'mobx-react-lite';
 import Box, { Item } from 'devextreme-react/box';
 import Form, {
   ButtonItem,
@@ -26,7 +27,7 @@ const Registration = () => {
     e.preventDefault();
     setFormFetch(true);
     profileAPI.addUser(registrationFormData).then((data) => {
-      if (data.resultCode === 1) {
+      if (!data.error) {
         notify('Регистрация прошла успешно', 'success', 3000);
         history.push('/login');
       }
@@ -47,7 +48,7 @@ const Registration = () => {
             showColonAfterLabel={true}
             validationGroup="customerData"
           >
-            <GroupItem caption="Авторизация">
+            <GroupItem caption="Регистрация">
               <SimpleItem dataField="email" editorType="dxTextBox">
                 <Label text="Адрес электронной почты" />
                 <RequiredRule message="Как с тобой связаться?" />
@@ -84,4 +85,4 @@ const Registration = () => {
   );
 };
 
-export default Registration;
+export default observer(Registration);

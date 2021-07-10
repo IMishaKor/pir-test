@@ -1,3 +1,8 @@
+export type resultDefault = {
+  error: boolean;
+  message: string;
+};
+
 export type user = {
   userId: number;
   email: string;
@@ -10,14 +15,43 @@ export type resultUser = {
   data: user | null;
 };
 export type authUser = {
-  userId: number | null;
+  userId: number;
   email: string;
   name: string;
 };
 
+export type note = {
+  noteId: number;
+  userId: number;
+  created: number;
+  note: string;
+  status: string;
+  editNow: string;
+};
+export type resultNote = {
+  error: boolean;
+  message: string;
+  data: note | null;
+};
+export type resultNotes = {
+  error: boolean;
+  message: string;
+  data: note[] | null;
+};
+
+export type addNoteProps = {
+  note: string;
+  status: string;
+};
+export type editNoteProps = {
+  noteId: number;
+  note: string;
+  status: string;
+};
+
 export interface AuthInterface {
   authUser: authUser;
-  sessionTabId: string | null;
+  sessionTabId: string;
   isAuth: boolean;
   init(): void;
   authLogout(): void;
@@ -30,3 +64,7 @@ export type addUserProps = {
   name: string;
   password: string;
 };
+
+export interface useParamTypes {
+  noteId: string;
+}

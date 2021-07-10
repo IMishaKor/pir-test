@@ -9,7 +9,9 @@ const NavbarItems = () => {
     <ul className="header__items">
       {Auth.isAuth ? (
         <>
-          <li>Привет Пользователь!</li>
+          <li>
+            Привет <b>{Auth.authUser.name}</b>!
+          </li>
           <li>
             <a
               href="/"

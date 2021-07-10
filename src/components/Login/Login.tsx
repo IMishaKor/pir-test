@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { Redirect, useHistory } from 'react-router-dom';
+import { observer } from 'mobx-react-lite';
 import Box, { Item } from 'devextreme-react/box';
 import Form, { ButtonItem, GroupItem, SimpleItem, Label, EmailRule, RequiredRule } from 'devextreme-react/form';
+import notify from 'devextreme/ui/notify';
 import Auth from '../../store/Auth';
 import { authFormData } from './data';
 
@@ -12,7 +14,11 @@ const Login = () => {
     e.preventDefault();
     setFormFetch(true);
     Auth.authLogin(authFormData.Email, authFormData.Password).then((data) => {
-      if (!data.error) {
+      if (data.error) {
+        notify(data.message, 'error', 3000);
+      } else {
+        authFormData.Email = '';
+        authFormData.Password = '';
         history.push('/notes');
       }
       setFormFetch(false);
@@ -56,4 +62,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default observer(Login);

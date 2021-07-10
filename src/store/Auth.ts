@@ -1,16 +1,16 @@
 import { Md5 } from 'md5-typescript';
 import { makeAutoObservable } from 'mobx';
 import { authAPI } from '../api/api';
-import { AuthInterface, resultUser } from '../common/type';
+import { AuthInterface } from '../common/type';
 
 class Auth implements AuthInterface {
   authUser = {
-    userId: null,
+    userId: 0,
     email: '',
     name: '',
   };
   isAuth = false;
-  sessionTabId: string | null = null;
+  sessionTabId: string = '';
 
   constructor() {
     makeAutoObservable(this);
@@ -30,13 +30,20 @@ class Auth implements AuthInterface {
   }
 
   async authMe(userId: Number) {
-    await authAPI.authMe(userId);
-    this.isAuth = true;
+    const authMyData = await authAPI.authMe(userId);
+    if (!authMyData.error && authMyData.data) {
+      this.authUser.userId = authMyData.data.userId;
+      this.authUser.name = authMyData.data.name;
+      this.authUser.email = authMyData.data.email;
+      this.isAuth = true;
+    } else {
+      this.authUser = { userId: 0, email: '', name: '' };
+      this.isAuth = false;
+    }
   }
 
   async authLogin(email: string, password: string) {
     const authLoginData = await authAPI.authLogin(email, password);
-    let result;
     if (!authLoginData.error && authLoginData.data) {
       await this.authMe(authLoginData.data.userId);
     }
@@ -45,7 +52,7 @@ class Auth implements AuthInterface {
 
   authLogout() {
     authAPI.authLogout();
-    this.authUser = { userId: null, email: '', name: '' };
+    this.authUser = { userId: 0, email: '', name: '' };
     this.isAuth = false;
   }
 }

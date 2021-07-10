@@ -4,6 +4,7 @@ import { Route, Switch } from 'react-router-dom';
 import { LoadPanel } from 'devextreme-react/load-panel';
 
 import Auth from './store/Auth';
+import AuthObserver from './components/Login/AuthObserver';
 import Page404 from './components/404';
 import Login from './components/Login/Login';
 import Navbar from './components/Navbar/Navbar';
@@ -35,6 +36,7 @@ const App = () => {
   }
   return (
     <>
+      <AuthObserver />
       <Navbar />
       <Switch>
         <Route path="/login" component={Login} />
