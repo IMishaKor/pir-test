@@ -1,20 +1,20 @@
 import React from 'react';
-import { create, act } from 'react-test-renderer';
+import TestRenderer, { create, act } from 'react-test-renderer';
 
 import Login from './Login';
 
-jest.mock('../../../node_modules/devextreme-react/box');
+// import Box from 'devextreme-react/box';
+// import Form from 'devextreme-react/form';
+
+// jest.mock('../../../node_modules/devextreme-react/box');
 jest.mock('../../../node_modules/devextreme-react/form');
 
 describe('<Login/> ', () => {
   test('render', async () => {
-    let component;
-    await act(async () => {
-      component = create(<Login />);
-    });
+    const component = create(<Login />);
 
     let tree = component.toJSON();
-    console.log(component.getInstance());
+    // console.log(component.getInstance());
     expect(tree).toMatchSnapshot();
 
     // await act(async () => {
