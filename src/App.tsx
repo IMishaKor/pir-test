@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import { Route, Switch } from 'react-router-dom';
 import { LoadPanel } from 'devextreme-react/load-panel';
+import { useStore } from './store/AuthStore';
 
-import Auth from './store/Auth';
 import AuthObserver from './components/Login/AuthObserver';
 import Page404 from './components/404';
 import Login from './components/Login/Login';
@@ -13,14 +13,14 @@ import EditNote from './components/Notes/EditNote';
 import Notes from './components/Notes/Notes';
 import Registration from './components/Profile/Registration';
 
-const App = () => {
-  const [init, setInit] = useState(false);
+const App = observer(() => {
+  const authStore = useStore();
+
   useEffect(() => {
-    Auth.init().then(() => {
-      setInit(true);
-    });
+    authStore?.init();
   }, []);
-  if (!init) {
+
+  if (!authStore?.isInit) {
     return (
       <LoadPanel
         shadingColor="rgba(0,0,0,0.4)"
@@ -34,6 +34,7 @@ const App = () => {
       />
     );
   }
+
   return (
     <>
       <AuthObserver />
@@ -48,5 +49,5 @@ const App = () => {
       </Switch>
     </>
   );
-};
-export default observer(App);
+});
+export default App;

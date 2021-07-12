@@ -72,7 +72,7 @@ export const profileAPI = {
         localStorage.setItem('users', JSON.stringify(users));
       } else {
         result.error = true;
-        result.message = 'Что-то пошло не так.';
+        result.message = 'Пользователь с таким Email уже зарегистрирован.';
       }
       return result;
     });
@@ -110,7 +110,7 @@ export const notesAPI = {
         if (n.noteId === data.noteId) {
           n.note = data.note;
           n.status = data.status;
-          // delete n.editNow;
+          n.editNow = '';
         }
       });
       localStorage.setItem('notes', JSON.stringify(notes));
@@ -128,7 +128,7 @@ export const notesAPI = {
       result.data = notes.find((n) => n.userId === +userId && n.noteId === noteId) || null;
 
       if (result.data) {
-        if (result.data.editNow === '') {
+        if (!result.data.editNow) {
           result.data.editNow = sessionTabId;
           notes.forEach((n, k) => {
             if (n.noteId === noteId) {

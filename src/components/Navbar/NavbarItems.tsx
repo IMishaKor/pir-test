@@ -2,22 +2,23 @@ import { NavLink } from 'react-router-dom';
 
 import { observer } from 'mobx-react-lite';
 
-import Auth from '../../store/Auth';
+import { useStore } from '../../store/AuthStore';
 
 const NavbarItems = () => {
+  const authStore = useStore();
   return (
     <ul className="header__items">
-      {Auth.isAuth ? (
+      {authStore?.isAuth ? (
         <>
           <li>
-            Привет <b>{Auth.authUser.name}</b>!
+            Привет <b>{authStore?.authUser.name}</b>!
           </li>
           <li>
             <a
-              href="/"
+              href="#"
               onClick={(e) => {
                 e.preventDefault();
-                Auth.authLogout();
+                authStore?.authLogout();
               }}
             >
               Выйти

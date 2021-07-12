@@ -13,7 +13,7 @@ import Form, {
 } from 'devextreme-react/form';
 import notify from 'devextreme/ui/notify';
 import { profileAPI } from '../../api/api';
-import Auth from '../../store/Auth';
+import { useStore } from '../../store/AuthStore';
 import { registrationFormData } from './data';
 
 const passwordComparison = () => {
@@ -21,22 +21,30 @@ const passwordComparison = () => {
 };
 
 const Registration = () => {
+  const authStore = useStore();
+
   const [formFetch, setFormFetch] = useState(false);
   const history = useHistory();
   const handleSubmit = (e: React.SyntheticEvent): void => {
     e.preventDefault();
     setFormFetch(true);
-    profileAPI.addUser(registrationFormData).then((data) => {
-      if (!data.error) {
-        notify('Регистрация прошла успешно', 'success', 3000);
-        history.push('/login');
-      }
-      setFormFetch(false);
-    });
+    profileAPI
+      .addUser(registrationFormData)
+      .then((data) => {
+        if (data.error) {
+          notify(data.message, 'warning', 3000);
+        } else {
+          notify('Регистрация прошла успешно', 'success', 3000);
+          history.push('/login');
+        }
+        setFormFetch(false);
+      })
+      .catch((error) => {
+        notify(error, 'error', 3000);
+        setFormFetch(false);
+      });
   };
-  if (Auth.isAuth) {
-    return <Redirect to="/" />;
-  }
+  if (authStore?.isAuth) return <Redirect to="/" />;
   return (
     <Box direction="row" width="100%" align="center" crossAlign="center">
       <Item ratio={0} baseSize={400}>

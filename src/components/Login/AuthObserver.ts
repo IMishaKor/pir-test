@@ -1,12 +1,14 @@
 import { useEffect } from 'react';
-import Auth from '../../store/Auth';
+import { useStore } from '../../store/AuthStore';
 
 function AuthObserver() {
+  const authStore = useStore();
+
   useEffect(() => {
     const authObserver = (e: StorageEvent): void => {
       if (e.key === 'AUTH_USER_ID') {
         const userId = localStorage.getItem(e.key) || 0;
-        Auth.authMe(+userId);
+        authStore?.authMe(+userId);
       }
     };
     window.addEventListener('storage', authObserver, false);

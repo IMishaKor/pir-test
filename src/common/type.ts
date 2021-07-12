@@ -3,23 +3,6 @@ export type resultDefault = {
   message: string;
 };
 
-export type user = {
-  userId: number;
-  email: string;
-  name: string;
-  password: string;
-};
-export type resultUser = {
-  error: boolean;
-  message: string;
-  data: user | null;
-};
-export type authUser = {
-  userId: number;
-  email: string;
-  name: string;
-};
-
 export type note = {
   noteId: number;
   userId: number;
@@ -67,4 +50,34 @@ export type addUserProps = {
 
 export interface useParamTypes {
   noteId: string;
+}
+
+export type user = {
+  userId: number;
+  email: string;
+  name: string;
+  password: string;
+};
+
+export type resultUser = {
+  error: boolean;
+  message: string;
+  data: user | null;
+};
+
+export type authUser = {
+  userId: number;
+  email: string;
+  name: string;
+};
+
+export interface IAuthStore {
+  authUser: authUser;
+  sessionTabId: string;
+  isAuth: boolean;
+  isInit: boolean;
+  init(): void;
+  authMe(userId: number): void;
+  authLogin(email: string, password: string): Promise<resultUser>;
+  authLogout(): void;
 }

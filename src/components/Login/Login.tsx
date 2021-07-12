@@ -4,30 +4,37 @@ import { observer } from 'mobx-react-lite';
 import Box, { Item } from 'devextreme-react/box';
 import Form, { ButtonItem, GroupItem, SimpleItem, Label, EmailRule, RequiredRule } from 'devextreme-react/form';
 import notify from 'devextreme/ui/notify';
-import Auth from '../../store/Auth';
+import { useStore } from '../../store/AuthStore';
+
 import { authFormData } from './data';
 
 const Login = () => {
+  const authStore = useStore();
+
   const [formFetch, setFormFetch] = useState(false);
   const history = useHistory();
   const handleSubmit = (e: React.SyntheticEvent): void => {
     e.preventDefault();
     setFormFetch(true);
-    Auth.authLogin(authFormData.Email, authFormData.Password).then((data) => {
-      if (data.error) {
-        notify(data.message, 'error', 3000);
-      } else {
-        authFormData.Email = '';
-        authFormData.Password = '';
-        history.push('/notes');
-      }
-      setFormFetch(false);
-    });
+    authStore
+      ?.authLogin(authFormData.Email, authFormData.Password)
+      .then((data) => {
+        if (data.error) {
+          notify(data.message, 'error', 3000);
+        } else {
+          authFormData.Email = '';
+          authFormData.Password = '';
+          history.push('/notes');
+        }
+        setFormFetch(false);
+      })
+      .catch((error) => {
+        notify(error, 'error', 3000);
+        setFormFetch(false);
+      });
   };
 
-  if (Auth.isAuth) {
-    return <Redirect to="/" />;
-  }
+  if (authStore?.isAuth) return <Redirect to="/" />;
   return (
     <Box direction="row" width="100%" align="center" crossAlign="center">
       <Item ratio={0} baseSize={400}>

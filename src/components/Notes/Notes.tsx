@@ -1,36 +1,47 @@
 import { useState, useEffect } from 'react';
 
-import { Redirect, NavLink, useHistory } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 
 import Box, { Item } from 'devextreme-react/box';
-import DataGrid, { Button, Column, Paging, Pager } from 'devextreme-react/data-grid';
+import DataGrid, { Button, Column, Paging, Pager, FilterRow, Lookup } from 'devextreme-react/data-grid';
 import { Button as Btn } from 'devextreme-react/button';
 import { Template } from 'devextreme-react/core/template';
+import notify from 'devextreme/ui/notify';
 
-import Auth from '../../store/Auth';
+import { useStore } from '../../store/AuthStore';
 import { notesAPI } from '../../api/api';
 import { note } from '../../common/type';
+import { statusData } from './data';
 
 const Notes = () => {
+  const authStore = useStore();
+
   const [notes, setNotes] = useState<note[]>([]);
   const history = useHistory();
 
   useEffect(() => {
     let isSubscribed = true;
-    notesAPI
-      .getNotes()
-      .then((data) => (isSubscribed && data.data ? setNotes(data.data) : null))
-      .catch((error) => (isSubscribed ? console.log(error) : null));
+    const getNotes = () => {
+      notesAPI
+        .getNotes()
+        .then((data) => (isSubscribed && data.data ? setNotes(data.data) : null))
+        .catch((error) => (isSubscribed ? console.log(error) : null));
+    };
+    getNotes();
+
+    const notesObserver = (e: StorageEvent) => {
+      if (e.key === 'notes') getNotes();
+    };
+    window.addEventListener('storage', notesObserver, false);
+
     return () => {
       // От ошибка не спасло, надо подумать...
       isSubscribed = false;
+
+      window.removeEventListener('storage', notesObserver, false);
     };
   }, []);
-
-  if (!Auth.isAuth) {
-    return <Redirect to="/login" />;
-  }
 
   const noteEdit = (e: any): void => {
     e.event.preventDefault();
@@ -39,7 +50,12 @@ const Notes = () => {
   const noteRemove = (e: any): void => {
     e.event.preventDefault();
     notesAPI.removeNote(+e.row.data.noteId).then(() => {
-      notesAPI.getNotes().then((data) => (data.data ? setNotes(data.data) : null));
+      notesAPI.getNotes().then((data) => {
+        if (data.data) {
+          setNotes(data.data);
+          notify('Заметка удалена');
+        }
+      });
     });
   };
 
@@ -67,17 +83,35 @@ const Notes = () => {
     return <div style={{ fontSize: 20 }}>Список заметок</div>;
   };
 
+  if (!authStore?.isAuth) return <Redirect to="/login" />;
   return (
     <Box direction="row" width="100%" align="center" crossAlign="center">
       <Item ratio={0} baseSize={700}>
-        <DataGrid dataSource={notes} showBorders={true} remoteOperations={true} onToolbarPreparing={onToolbarPreparing}>
-          <Column dataField="created" caption="Дата" dataType="datetime" />
+        <DataGrid
+          id="notesTable"
+          dataSource={notes}
+          showBorders={true}
+          remoteOperations={true}
+          onToolbarPreparing={onToolbarPreparing}
+        >
+          <FilterRow
+            visible={true}
+            applyFilter={{
+              key: 'auto',
+              name: 'Immediately',
+            }}
+          />
+
+          <Column dataField="created" caption="Дата" dataType="date" width="145" />
           <Column dataField="note" caption="Заметка" dataType="string" />
-          <Column dataField="status" caption="Статус" dataType="string" />
-          <Column type="buttons" width={110}>
-            <Button hint="Clone" icon="edit" onClick={noteEdit} />
-            <Button hint="Clone" icon="trash" onClick={noteRemove} />
+          <Column dataField="status" caption="Статус" dataType="string" width="145">
+            <Lookup dataSource={{ store: { type: 'array', data: statusData } }} />
           </Column>
+          <Column type="buttons" width="70">
+            <Button hint="Редактировать" icon="edit" onClick={noteEdit} />
+            <Button hint="Удалить" icon="trash" onClick={noteRemove} />
+          </Column>
+
           <Paging defaultPageSize={3} />
           <Pager showPageSizeSelector={true} allowedPageSizes={[3, 6, 'all']} />
           <Template name="addBtn" render={addBtn} />
