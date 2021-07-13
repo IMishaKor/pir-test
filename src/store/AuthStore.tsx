@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { Md5 } from 'md5-typescript';
-import { makeAutoObservable } from 'mobx';
+import { action, makeObservable, observable } from 'mobx';
 import { authAPI } from '../api/api';
 import { IAuthStore } from '../common/type';
 
@@ -15,7 +15,14 @@ export default class AuthStore implements IAuthStore {
   sessionTabId = '';
 
   constructor() {
-    makeAutoObservable(this);
+    makeObservable(this, {
+      isAuth: observable,
+      isInit: observable,
+      init: action,
+      authMe: action,
+      authLogin: action,
+      authLogout: action,
+    });
   }
 
   async init() {

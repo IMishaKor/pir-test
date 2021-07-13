@@ -1,9 +1,6 @@
-import { useState } from 'react';
-import { Redirect, useHistory } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import Box, { Item } from 'devextreme-react/box';
-import Form, { ButtonItem, GroupItem, SimpleItem, Label, EmailRule, RequiredRule } from 'devextreme-react/form';
-import notify from 'devextreme/ui/notify';
 import { useStore } from '../../store/AuthStore';
 
 import { authFormData } from './data';
