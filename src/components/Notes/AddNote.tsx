@@ -31,7 +31,7 @@ const AddNote = observer(() => {
 
   useEffect(() => {
     const seveNoteKeydown = (e: KeyboardEvent) => {
-      if (e.ctrlKey && e.key.toLowerCase() === 's') {
+      if (e.ctrlKey && (e.key.toLowerCase() === 's' || e.key.toLowerCase() === 'ы')) {
         e.preventDefault();
         refBtnSubmit?.focus();
         refBtnSubmit?.click();

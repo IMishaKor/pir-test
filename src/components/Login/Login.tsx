@@ -3,7 +3,6 @@ import { observer } from 'mobx-react-lite';
 import Box, { Item } from 'devextreme-react/box';
 import { useStore } from '../../store/AuthStore';
 
-import { authFormData } from './data';
 import LoginForm from './LoginForm';
 
 const Login = () => {
