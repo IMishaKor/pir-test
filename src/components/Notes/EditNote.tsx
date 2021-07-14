@@ -51,6 +51,8 @@ const EditNote = observer(() => {
             status: data.data.status,
           });
           setFormFetchData(false);
+        } else {
+          history.push('/404');
         }
       })
       .catch((error) => {
